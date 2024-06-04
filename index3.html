@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Distancia Métrica entre Dos Puntos</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-family: Arial, sans-serif;
+            background-color: #282c34;
+            color: white;
+            margin: 0;
+            height: 100vh;
+            justify-content: flex-start;
+        }
+        h1 {
+            font-size: 2rem;
+            margin: 20px 0;
+        }
+        #controls {
+            display: flex;
+            flex-direction: row; /* Cambiado a fila */
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        #controls > div {
+            margin: 10px;
+        }
+        #plano {
+            border: 2px solid white;
+            background-color: black;
+        }
+        .distance {
+            margin-top: 20px;
+        }
+        button, input[type="number"] {
+            padding: 10px;
+            margin: 5px;
+            border: none;
+            cursor: pointer;
+            background-color: #61dafb;
+            color: black;
+            font-size: 1rem;
+            border-radius: 5px;
+        }
+        button:hover {
+            background-color: #21a1f1;
+        }
+        #manual-input {
+            display: flex;
+            flex-direction: row; /* Cambiado a fila */
+            align-items: center;
+            margin-top: 20px;
+        }
+        #manual-input input {
+            margin: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Calculadora de Distancia Métrica entre Dos Puntos</h1>
+    <div id="controls">
+        <div id="manual-input" style="display:none;">
+            <h2>Ingresar Coordenadas Manualmente</h2>
+            <label for="x1">X1:</label>
+            <input type="number" id="x1">
+            <label for="y1">Y1:</label>
+            <input type="number" id="y1">
+            <label for="x2">X2:</label>
+            <input type="number" id="x2">
+            <label for="y2">Y2:</label>
+            <input type="number" id="y2">
+            <button onclick="calculateDistanceManual()">Calcular Distancia</button>
+        </div>
+    </div>
+    <canvas id="plano"></canvas>
+    <div class="distance" id="distance"></div>
+
+    <script>
+        function createPlano(x1, y1, x2, y2) {
+            const size = 400; // Tamaño del plano
+            const canvas = document.getElementById('plano');
+            canvas.width = size;
+            canvas.height = size;
+            const ctx = canvas.getContext('2d');
+
+            // Dibuja el plano cartesiano
+            ctx.fillStyle = 'black';
+            ctx.fillRect(0, 0, size, size);
+            ctx.strokeStyle = 'white';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            // Eje Y
+            ctx.moveTo(size / 2, 0);
+            ctx.lineTo(size / 2, size);
+            // Eje X
+            ctx.moveTo(0, size / 2);
+            ctx.lineTo(size, size / 2);
+            ctx.stroke();
+
+            // Añadir números a los ejes
+            ctx.fillStyle = 'white';
+            ctx.font = '12px Arial';
+            for (let i = 0; i <= size; i += size / 10) {
+                const number = (i - size / 2) / (size / 20); // Ajuste para que los números negativos estén a la izquierda
+                ctx.fillText(number, i, size / 2 + 12);
+                ctx.fillText(-number, size / 2 + 5, i); // Ajuste para que los números negativos estén abajo
+            }
+
+            // Dibuja los puntos
+            const p1 = { x: x1 * (size / 20) + size / 2, y: -y1 * (size / 20) + size / 2 };
+            const p2 = { x: x2 * (size / 20) + size / 2, y: -y2 * (size / 20) + size / 2 };
+            ctx.fillStyle = 'red';
+            ctx.beginPath();
+            ctx.arc(p1.x, p1.y, 4, 0, 2 * Math.PI);
+            ctx.arc(p2.x, p2.y, 4, 0, 2 * Math.PI);
+            ctx.fill();
+
+            // Dibuja la línea entre los puntos
+            ctx.strokeStyle = 'yellow';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(p1.x, p1.y);
+            ctx.lineTo(p2.x, p2.y);
+            ctx.stroke();
+
+            // Dibuja el triángulo
+            ctx.strokeStyle = 'rgba(255, 0, 0, 0.7)';
+            ctx.setLineDash([5, 5]);
+            ctx.beginPath();
+            ctx.moveTo(p1.x, p1.y);
+            ctx.lineTo(p1.x, p2.y);
+            ctx.lineTo(p2.x, p2.y);
+            ctx.closePath();
+            ctx.stroke();
+        }
+
+        function calculateDistanceManual() {
+            const x1 = parseFloat(document.getElementById('x1').value);
+            const y1 = parseFloat(document.getElementById('y1').value);
+            const x2 = parseFloat(document.getElementById('x2').value);
+            const y2 = parseFloat(document.getElementById('y2').value);
+            
+            const distance = `√((${x2} - ${x1})² + (${y2} - ${y1})²)`;
+            const distanceSqrt = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+            document.getElementById('distance').innerText = `Distancia entre los puntos: ${distance} = ${distanceSqrt.toFixed(2)}`;
+            createPlano(x1, y1, x2, y2);
+        }
+
+        document.getElementById('manual-input').style.display = 'flex'; // Mostrar los controles manuales por defecto
+    // Ejemplo interactivo de la propiedad de simetría
+        function ejemploSimetria() {
+            const x1 = 1;
+            const y1 = 2;
+            const x2 = 4;
+            const y2 = 6;
+            
+            createPlano(x1, y1, x2, y2);
+            const distance = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2)).toFixed(2);
+            alert(`La distancia entre los puntos (${x1},${y1}) y (${x2},${y2}) es: ${distance}`);
+        }
+
+        // Ejemplo interactivo de la propiedad de desigualdad triangular
+        function ejemploDesigualdadTriangular() {
+            const x1 = 1;
+            const y1 = 1;
+            const x2 = 4;
+            const y2 = 5;
+            const x3 = 7;
+            const y3 = 3;
+
+            createPlano(x1, y1, x2, y2);
+            createPlano(x2, y2, x3, y3);
+            createPlano(x1, y1, x3, y3);
+
+            const distance12 = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2)).toFixed(2);
+            const distance23 = Math.sqrt(Math.pow(x3 - x2, 2) + Math.pow(y3 - y2, 2)).toFixed(2);
+            const distance13 = Math.sqrt(Math.pow(x3 - x1, 2) + Math.pow(y3 - y1, 2)).toFixed(2);
+
+            if (distance12 + distance23 > distance13 &&
+                distance12 + distance13 > distance23 &&
+                distance13 + distance23 > distance12) {
+                alert("¡Cumple la desigualdad triangular!");
+            } else {
+                alert("No cumple la desigualdad triangular.");
+            }
+        }
+
+        // Ejemplo interactivo de la propiedad de no negatividad
+        function ejemploNoNegatividad() {
+            const x1 = 3;
+            const y1 = 2;
+            const x2 = 5;
+            const y2 = 7;
+
+            createPlano(x1, y1, x2, y2);
+            const distance = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2)).toFixed(2);
+            alert(`La distancia entre los puntos (${x1},${y1}) y (${x2},${y2}) es: ${distance}`);
+        }
+
+        // Ejemplo interactivo de la propiedad de identidad de los indiscernibles
+        function ejemploIdentidadIndiscernibles() {
+            const x1 = 2;
+            const y1 = 3;
+
+            createPlano(x1, y1, x1, y1);
+            const distance = Math.sqrt(Math.pow(x1 - x1, 2) + Math.pow(y1 - y1, 2)).toFixed(2);
+            alert(`La distancia entre un punto y sí mismo es siempre 0. La distancia es: ${distance}`);
+        }
+
+        // Ejemplo interactivo de la propiedad de continuidad
+        function ejemploContinuidad() {
+            const x1 = 1;
+            const y1 = 1;
+            const x2 = 4;
+            const y2 = 5;
+
+            createPlano(x1, y1, x2, y2);
+            alert("Cambiar suavemente las coordenadas de los puntos mostrará que la distancia cambia de manera continua.");
+        }
+    </script>
+    <!-- Ejemplos interactivos -->
+    <button onclick="ejemploSimetria()">Ejemplo de Simetría</button>
+    <button onclick="ejemploDesigualdadTriangular()">Ejemplo de Desigualdad Triangular</button>
+    <button onclick="ejemploNoNegatividad()">Ejemplo de No Negatividad</button>
+    <button onclick="ejemploIdentidadIndiscernibles()">Ejemplo de Identidad de los Indiscernibles</button>
+    <button onclick="ejemploContinuidad()">Ejemplo de Continuidad</button>
+</body>
+</html>
+
