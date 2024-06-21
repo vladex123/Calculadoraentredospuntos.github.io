@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consulta de Proximidad Interactiva</title>
+    <style>
+        body { display: flex; flex-direction: column; align-items: center; margin: 0; padding: 20px; font-family: Arial, sans-serif; }
+        canvas { border: 1px solid black; margin-top: 20px; }
+        form { display: flex; flex-direction: column; align-items: center; }
+        input { margin: 5px; padding: 5px; }
+        button { padding: 5px 10px; margin-top: 10px; }
+        #results { margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <h1>Consulta de Proximidad Interactiva</h1>
+    <form id="input-form">
+        <h3>Agregar Repartidor</h3>
+        <input type="number" id="repartidor-lat" placeholder="Latitud" step="0.000001" required>
+        <input type="number" id="repartidor-lon" placeholder="Longitud" step="0.000001" required>
+        <input type="text" id="repartidor-name" placeholder="Nombre del Repartidor" required>
+        <button type="button" onclick="addRepartidor()">Agregar Repartidor</button>
+    </form>
+    <button onclick="randomRepartidores()">Generar Repartidores Aleatorios</button>
+    <p>Haga clic en el mapa para seleccionar una dirección</p>
+    <div id="results"></div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+    <script>
+        // Implementación de KDTree
+        class Node {
+            constructor(point, left = null, right = null) {
+                this.point = point;
+                this.left = left;
+                this.right = right;
+            }
+        }
+
+        function euclideanDistance(a, b) {
+            return Math.sqrt(Math.pow(a[0] - b[0], 2) + Math.pow(a[1] - b[1], 2));
+        }
+
+        function buildKDTree(points, depth = 0) {
+            if (points.length === 0) return null;
+            const axis = depth % 2;
+            points.sort((a, b) => a.point[axis] - b.point[axis]);
+            const median = Math.floor(points.length / 2);
+            return new Node(
+                points[median],
+                buildKDTree(points.slice(0, median), depth + 1),
+                buildKDTree(points.slice(median + 1), depth + 1)
+            );
+        }
+
+        function nearestNeighbors(root, point, k, depth = 0, best = []) {
+            if (root === null) return best;
+            const axis = depth % 2;
+            const distance = euclideanDistance(point, root.point.point);
+            best.push({ point: root.point, distance });
+            best.sort((a, b) => a.distance - b.distance);
+            if (best.length > k) best.pop();
+
+            const diff = point[axis] - root.point.point[axis];
+            const closeBranch = diff < 0 ? root.left : root.right;
+            const awayBranch = diff < 0 ? root.right : root.left;
+
+            best = nearestNeighbors(closeBranch, point, k, depth + 1, best);
+            if (best.length < k || Math.abs(diff) < best[best.length - 1].distance) {
+                best = nearestNeighbors(awayBranch, point, k, depth + 1, best);
+            }
+            return best;
+        }
+
+        let repartidores = [];
+        let kdTree;
+        let nearestPoints = [];
+        let direccion = null;
+
+        function setup() {
+            createCanvas(800, 600);
+            kdTree = buildKDTree(repartidores);
+        }
+
+        function draw() {
+            background(255);
+            for (let rep of repartidores) {
+                fill(0, 0, 255);
+                ellipse(rep.point[0], rep.point[1], 10, 10);
+                text(rep.name, rep.point[0] + 10, rep.point[1]);
+            }
+            if (direccion) {
+                fill(0, 255, 0);
+                ellipse(direccion[0], direccion[1], 10, 10);
+            }
+            for (let np of nearestPoints) {
+                fill(255, 0, 0);
+                ellipse(np.point.point[0], np.point.point[1], 10, 10);
+            }
+        }
+
+        function mousePressed() {
+            direccion = [mouseX, mouseY];
+            nearestPoints = nearestNeighbors(kdTree, direccion, 5);
+            displayResults();
+        }
+
+        function addRepartidor() {
+            const lat = parseFloat(document.getElementById('repartidor-lat').value);
+            const lon = parseFloat(document.getElementById('repartidor-lon').value);
+            const name = document.getElementById('repartidor-name').value;
+            repartidores.push({ point: [lat, lon], name });
+            kdTree = buildKDTree(repartidores);
+            document.getElementById('input-form').reset();
+        }
+
+        function randomRepartidores() {
+            repartidores = [];
+            for (let i = 0; i < 20; i++) {
+                repartidores.push({
+                    point: [random(width), random(height)],
+                    name: 'Repartidor ' + (i + 1)
+                });
+            }
+            kdTree = buildKDTree(repartidores);
+        }
+
+        function displayResults() {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '<h3>Repartidores más Cercanos</h3>';
+            nearestPoints.forEach((np, index) => {
+                resultsDiv.innerHTML += `<p>${index + 1}. ${np.point.name} - Distancia: ${np.distance.toFixed(2)}</p>`;
+            });
+        }
+    </script>
+</body>
+</html>
