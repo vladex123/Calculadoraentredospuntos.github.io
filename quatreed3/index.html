@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quad Tree Image Processing</title>
+    <style>
+        canvas {
+            display: block;
+            margin: auto;
+            border: 1px solid black;
+            margin-top: 20px;
+        }
+        input[type=range] {
+            width: 80%;
+            margin: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h2>Quad Tree Image Processing</h2>
+    <input type="file" id="imageInput" accept="image/*">
+    <br>
+    <label for="threshold">Threshold:</label>
+    <input type="range" id="threshold" name="threshold" min="1" max="255" value="50">
+    <span id="thresholdValue">50</span>
+    <br>
+    <canvas id="originalCanvas" width="400" height="400"></canvas>
+    <canvas id="reconstructedCanvas" width="400" height="400"></canvas>
+
+    <script src="quadtree.js"></script>
+</body>
+</html>
