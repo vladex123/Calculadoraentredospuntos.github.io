@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Search System</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Image Search System</h1>
+        <div class="form-group">
+            <label for="color">Average Color:</label>
+            <input type="number" id="color" placeholder="e.g., 0.75" step="0.01" min="0" max="1">
+        </div>
+        <div class="form-group">
+            <label for="texture">Texture:</label>
+            <input type="number" id="texture" placeholder="e.g., 0.55" step="0.01" min="0" max="1">
+        </div>
+        <div class="form-group">
+            <label for="shape">Shape:</label>
+            <input type="number" id="shape" placeholder="e.g., 0.65" step="0.01" min="0" max="1">
+        </div>
+        <button id="searchButton" class="btn">Search Similar Images</button>
+        <div id="resultsContainer" class="results-container"></div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

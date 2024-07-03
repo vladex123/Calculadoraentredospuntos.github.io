@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music Recommendation System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            text-align: center;
+        }
+        input, button {
+            padding: 10px;
+            margin: 10px;
+            width: 80%;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Music Recommendation System</h1>
+        <input type="text" id="tempo" placeholder="Tempo">
+        <input type="text" id="pitch" placeholder="Pitch">
+        <input type="text" id="duration" placeholder="Duration">
+        <button onclick="addSong()">Add Song</button>
+        <button onclick="recommendSongs()">Recommend Songs</button>
+        <div id="recommendations"></div>
+    </div>
+    <script src="recommender.js"></script>
+</body>
+</html>

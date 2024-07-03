@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recomendador de Canciones</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #121212;
+            color: #ffffff;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            width: 90%;
+            max-width: 800px;
+            padding: 20px;
+            background-color: #282828;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+        }
+        h1 {
+            text-align: center;
+            color: #1DB954;
+            margin-bottom: 30px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+        input {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 5px;
+            box-sizing: border-box;
+            margin-bottom: 10px;
+            background-color: #333333;
+            color: #ffffff;
+            font-size: 16px;
+        }
+        button {
+            width: 100%;
+            padding: 15px;
+            background-color: #1DB954;
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #1AAE48;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 30px;
+        }
+        th, td {
+            padding: 15px;
+            text-align: center;
+        }
+        th {
+            background-color: #1DB954;
+            color: #ffffff;
+        }
+        td {
+            background-color: #333333;
+            color: #ffffff;
+        }
+        tr:nth-child(even) td {
+            background-color: #282828;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Recomendador de Canciones</h1>
+        <div class="form-group">
+            <label for="tempo">Tempo (BPM):</label>
+            <input type="number" id="tempo" placeholder="Ej. 120">
+        </div>
+        <div class="form-group">
+            <label for="pitch">Pitch (Hz):</label>
+            <input type="number" id="pitch" placeholder="Ej. 440">
+        </div>
+        <div class="form-group">
+            <label for="duration">Duración (s):</label>
+            <input type="number" id="duration" placeholder="Ej. 180">
+        </div>
+        <button id="searchButton">Buscar Canciones Similares</button>
+        <table id="resultsTable">
+            <thead>
+                <tr>
+                    <th>ID Canción</th>
+                    <th>Nombre</th>
+                    <th>Tempo</th>
+                    <th>Pitch</th>
+                    <th>Duración</th>
+                    <th>Distancia</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
+    <script>
+        const songs = [
+            { id: 1, name: "Bohemian Rhapsody", features: [144, 58, 355] },
+            { id: 2, name: "Hotel California", features: [150, 60, 390] },
+            { id: 3, name: "Billie Jean", features: [116, 52, 294] },
+            { id: 4, name: "No Woman No Cry", features: [82, 55, 275] },
+            { id: 5, name: "Wonderwall", features: [87, 50, 258] },
+            { id: 6, name: "Like a Rolling Stone", features: [96, 53, 371] },
+            { id: 7, name: "Redemption Song", features: [75, 54, 228] },
+            { id: 8, name: "Imagine", features: [74, 48, 183] },
+            { id: 9, name: "Sweet Child O' Mine", features: [125, 62, 356] },
+            { id: 10, name: "Stairway to Heaven", features: [82, 57, 482] },
+            { id: 11, name: "Shape of You", features: [96, 54, 233] },
+            { id: 12, name: "Let It Be", features: [76, 51, 243] },
+            { id: 13, name: "Is This Love", features: [91, 56, 230] },
+            { id: 14, name: "Smells Like Teen Spirit", features: [117, 64, 301] },
+            { id: 15, name: "With or Without You", features: [110, 55, 295] },
+            { id: 16, name: "I Will Always Love You", features: [67, 49, 273] },
+            { id: 17, name: "Three Little Birds", features: [76, 53, 180] },
+            { id: 18, name: "Hallelujah", features: [78, 50, 282] },
+            { id: 19, name: "Hey Jude", features: [72, 52, 431] },
+            { id: 20, name: "Every Breath You Take", features: [110, 58, 251] }
+        ];
+
+        const euclideanDistance = (a, b) => Math.sqrt(a.reduce((sum, val, i) => sum + (val - b[i]) ** 2, 0));
+
+        class Node {
+            constructor(song) {
+                this.song = song;
+                this.radius = 0;
+                this.inside = null;
+                this.outside = null;
+            }
+        }
+
+        class VPTree {
+            constructor(songs, distanceFunc) {
+                this.distanceFunc = distanceFunc;
+                this.root = this.buildTree(songs);
+            }
+
+            buildTree(songs) {
+                if (songs.length === 0) return null;
+
+                const index = Math.floor(Math.random() * songs.length);
+                const song = songs[index];
+                const node = new Node(song);
+
+                songs.splice(index, 1);
+                if (songs.length === 0) return node;
+
+                const distances = songs.map(s => this.distanceFunc(song.features, s.features));
+                const median = this.median(distances);
+
+                node.radius = median;
+                const insideSongs = songs.filter((s, i) => distances[i] <= median);
+                const outsideSongs = songs.filter((s, i) => distances[i] > median);
+
+                node.inside = this.buildTree(insideSongs);
+                node.outside = this.buildTree(outsideSongs);
+
+                return node;
+            }
+
+            median(values) {
+                values.sort((a, b) => a - b);
+                const mid = Math.floor(values.length / 2);
+                return values[mid];
+            }
+
+            search(song, maxResults, node = this.root, neighbors = []) {
+                if (!node) return neighbors;
+
+                const dist = this.distanceFunc(song.features, node.song.features);
+                if (neighbors.length < maxResults || dist < neighbors[0].distance) {
+                    neighbors.push({ song: node.song, distance: dist });
+                    neighbors.sort((a, b) => b.distance - a.distance);
+                    if (neighbors.length > maxResults) neighbors.shift();
+                }
+
+                const checkInsideFirst = dist < node.radius;
+                if (checkInsideFirst) {
+                    this.search(song, maxResults, node.inside, neighbors);
+                    if (neighbors.length < maxResults || Math.abs(node.radius - dist) < neighbors[0].distance) {
+                        this.search(song, maxResults, node.outside, neighbors);
+                    }
+                } else {
+                    this.search(song, maxResults, node.outside, neighbors);
+                    if (neighbors.length < maxResults || Math.abs(node.radius - dist) < neighbors[0].distance) {
+                        this.search(song, maxResults, node.inside, neighbors);
+                    }
+                }
+
+                return neighbors;
+            }
+        }
+
+        const tree = new VPTree(songs, euclideanDistance);
+
+        const searchButton = document.getElementById('searchButton');
+        const resultsTable = document.getElementById('resultsTable').getElementsByTagName('tbody')[0];
+
+        searchButton.addEventListener('click', () => {
+            const tempo = parseFloat(document.getElementById('tempo').value);
+            const pitch = parseFloat(document.getElementById('pitch').value);
+            const duration = parseFloat(document.getElementById('duration').value);
+
+            if (isNaN(tempo) || isNaN(pitch) || isNaN(duration)) {
+                alert('Por favor, ingresa valores válidos para todas las características.');
+                return;
+            }
+
+            const inputSong = { id: null, features: [tempo, pitch, duration] };
+            const results = tree.search(inputSong, 3);
+
+            resultsTable.innerHTML = '';
+            results.forEach(result => {
+                const row = resultsTable.insertRow();
+                row.insertCell(0).innerText = result.song.id;
+                row.insertCell(1).innerText = result.song.name;
+                row.insertCell(2).innerText = result.song.features[0];
+                row.insertCell(3).innerText = result.song.features[1];
+                row.insertCell(4).innerText = result.song.features[2];
+                row.insertCell(5).innerText = result.distance.toFixed(2);
+            });
+        });
+    </script>
+</body>
+</html>
