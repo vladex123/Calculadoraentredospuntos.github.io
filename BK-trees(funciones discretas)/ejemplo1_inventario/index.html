@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BK-Tree Example</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        input, button {
+            margin: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>BK-Tree with Discrete Functions Example</h1>
+    <h2>Add Product</h2>
+    <label for="name">Name:</label>
+    <input type="text" id="name">
+    <br>
+    <label for="stock">Stock:</label>
+    <input type="number" id="stock">
+    <br>
+    <label for="reordered">Times Reordered:</label>
+    <input type="number" id="reordered">
+    <br>
+    <label for="category">Category:</label>
+    <input type="text" id="category">
+    <br>
+    <button onclick="addProduct()">Add Product</button>
+    <h2>Search Product</h2>
+    <label for="searchName">Name:</label>
+    <input type="text" id="searchName">
+    <br>
+    <label for="searchStock">Stock:</label>
+    <input type="number" id="searchStock">
+    <br>
+    <label for="searchReordered">Times Reordered:</label>
+    <input type="number" id="searchReordered">
+    <br>
+    <label for="searchCategory">Category:</label>
+    <input type="text" id="searchCategory">
+    <br>
+    <label for="threshold">Distance Threshold:</label>
+    <input type="number" id="threshold" value="3">
+    <br>
+    <button onclick="searchProduct()">Search Product</button>
+    <h2>Results</h2>
+    <ul id="results"></ul>
+    <script src="bktree.js"></script>
+</body>
+</html>
