@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Mapa de Restaurantes en Puno</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Restaurantes Cercanos en Puno</h1>
+        </header>
+        <main class="main-grid">
+            <div id="map"></div>
+            <div id="results">
+                <h2>Restaurantes Cercanos:</h2>
+                <ul id="restaurant-list" class="list-group"></ul>
+            </div>
+        </main>
+        <footer>
+            <p>© 2024 Mapa de Restaurantes en Puno</p>
+        </footer>
+    </div>
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="grid.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
