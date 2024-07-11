@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buscador de Imágenes Similares</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 1000px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1, h2 {
+            color: #333;
+        }
+        #dropArea {
+            border: 2px dashed #ccc;
+            border-radius: 20px;
+            width: 480px;
+            height: 180px;
+            padding: 20px;
+            text-align: center;
+            margin: 20px auto;
+        }
+        #dropArea.highlight {
+            border-color: purple;
+        }
+        #gallery {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .thumbnail {
+            margin: 10px;
+            max-width: 150px;
+            max-height: 150px;
+        }
+        #queryImage {
+            max-width: 300px;
+            max-height: 300px;
+            margin: 20px auto;
+            display: block;
+        }
+        #results {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .result {
+            margin: 10px;
+            text-align: center;
+        }
+        .result img {
+            max-width: 150px;
+            max-height: 150px;
+        }
+        button {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Buscador de Imágenes Similares</h1>
+        
+        <h2>1. Cargar imágenes de base de datos</h2>
+        <div id="dropArea">
+            Arrastra y suelta imágenes aquí o haz clic para seleccionar archivos
+            <input type="file" id="fileElem" multiple accept="image/*" style="display:none">
+        </div>
+        <div id="gallery"></div>
+        
+        <h2>2. Seleccionar imagen de consulta</h2>
+        <input type="file" id="queryFile" accept="image/*">
+        <img id="queryImage" style="display: none;">
+        
+        <h2>3. Buscar imágenes similares</h2>
+        <button id="searchButton" disabled>Buscar imágenes similares</button>
+        
+        <h2>Resultados:</h2>
+        <div id="results"></div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
