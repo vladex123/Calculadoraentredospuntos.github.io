@@ -1,0 +1,22 @@
+CREATE DATABASE biblioteca;
+USE biblioteca;
+
+CREATE TABLE libros (
+    id INT PRIMARY KEY,
+    titulo VARCHAR(255) NOT NULL,
+    autor VARCHAR(255) NOT NULL
+);
+
+-- Insertar 1000 registros de ejemplo
+DELIMITER //
+CREATE PROCEDURE InsertarLibrosEjemplo()
+BEGIN
+    DECLARE i INT DEFAULT 1;
+    WHILE i <= 1000 DO
+        INSERT INTO libros (id, titulo, autor) VALUES (i, CONCAT('Libro ', i), CONCAT('Autor ', (i % 50) + 1));
+        SET i = i + 1;
+    END WHILE;
+END //
+DELIMITER ;
+
+CALL InsertarLibrosEjemplo();

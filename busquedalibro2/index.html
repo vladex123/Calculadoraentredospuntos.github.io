@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Biblioteca Moderno</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Sistema de Biblioteca</h1>
+        
+        <div class="card">
+            <h2>Buscar Libro</h2>
+            <input type="number" id="buscarId" placeholder="ID del libro" disabled>
+            <button onclick="buscarLibro()" disabled>Buscar</button>
+        </div>
+
+        <div class="card">
+            <h2>Insertar Libro</h2>
+            <input type="number" id="insertId" placeholder="ID del libro" disabled>
+            <input type="text" id="insertTitulo" placeholder="Título del libro" disabled>
+            <input type="text" id="insertAutor" placeholder="Autor del libro" disabled>
+            <button onclick="insertarLibro()" disabled>Insertar</button>
+        </div>
+
+        <div class="card">
+            <h2>Eliminar Libro</h2>
+            <input type="number" id="eliminarId" placeholder="ID del libro" disabled>
+            <button onclick="eliminarLibro()" disabled>Eliminar</button>
+        </div>
+
+        <div id="resultado" class="card resultado"></div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
