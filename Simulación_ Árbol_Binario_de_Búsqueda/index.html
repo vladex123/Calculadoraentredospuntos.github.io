@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BST Visualizer Pro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>BST Visualizer Pro</h1>
+        </header>
+        <main>
+            <div class="control-panel">
+                <div class="input-group">
+                    <input type="text" id="wordInput" placeholder="Ingrese una palabra">
+                    <button id="insertBtn" class="btn primary">Insertar</button>
+                    <button id="searchBtn" class="btn secondary">Buscar</button>
+                    <button id="deleteBtn" class="btn danger">Eliminar</button>
+                </div>
+                <div class="operation-group">
+                    <button id="inorderBtn" class="btn info">Inorden</button>
+                    <button id="preorderBtn" class="btn info">Preorden</button>
+                    <button id="postorderBtn" class="btn info">Postorden</button>
+                    <button id="minMaxBtn" class="btn info">Mín/Máx</button>
+                    <button id="countBtn" class="btn info">Contar Nodos</button>
+                </div>
+            </div>
+            <div id="visualization">
+                <canvas id="treeCanvas"></canvas>
+            </div>
+            <div id="infoPanel">
+                <div id="result"></div>
+                <div id="explanation"></div>
+            </div>
+        </main>
+    </div>
+    <div id="explanationBox" class="explanation-box"></div>
+    <script src="script.js"></script>
+</body>
+</html>
